@@ -1,33 +1,27 @@
 package Entidades;
 
 public class Computador {
-    private String sistemaOperacional;
-    private Double memoriaUso;
-    private Double discoUso;
+    private String hostName;
+    private String ipv4;
 
-    public String getSistemaOperacional() {
-        return sistemaOperacional;
+    public Computador(String hostName, String ipv4) {
+        this.hostName = hostName;
+        this.ipv4 = ipv4;
     }
 
-    public void setSistemaOperacional(String sistemaOperacional) {
-        this.sistemaOperacional = sistemaOperacional;
+    public String getHostName() {
+        return hostName;
     }
 
-    public Double getMemoriaUso() {
-        return memoriaUso;
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
     }
 
-    public void setMemoriaUso(Double memoriaUso) {
-        this.memoriaUso = memoriaUso;
+    public String getIpv4() {
+        return ipv4;
     }
 
-    public Double getDiscoUso() {
-        return discoUso;
+    public void setIpv4(String ipv4) {
+        this.ipv4 = ipv4;
     }
-
-    public void setDiscoUso(Double discoUso) {
-        this.discoUso = discoUso;
-    }
-
-
 }

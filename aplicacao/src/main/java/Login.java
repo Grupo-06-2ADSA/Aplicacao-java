@@ -1,12 +1,13 @@
-import java.util.ArrayList;
-import java.util.List;
+import Entidades.Usuario;
 
 
-public class Main {
+public class Login {
 
     public static void main(String[] args) {
 
         System.out.println("""
+                Seja Bem Vindo(a) a
+                
                 **      **  **  **   **  *******         ********  **********  *********    *********
                 ** **** **  **  ***  **  **     **      **         **      **  **      **   **
                 **  **  **  **  ** * **  **      **    **          **      **  *********    *****
@@ -15,17 +16,6 @@ public class Main {
                 
                 """);
 
-        AutenticacaoUsuario autenticacaoUsuario = new AutenticacaoUsuario();
-
-        List<String> listaDadosUsuario = new ArrayList<>();
-
-        listaDadosUsuario.add("andre.silva@sptech.school");
-        listaDadosUsuario.add("123456");
-
-        listaDadosUsuario.add("sofia.machado@sptech.school");
-        listaDadosUsuario.add("654321");
-
-        autenticacaoUsuario.FazerLogin(listaDadosUsuario);
-
+        Usuario.FazerLogin();
     }
 }
