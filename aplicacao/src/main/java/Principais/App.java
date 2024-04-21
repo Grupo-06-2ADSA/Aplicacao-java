@@ -1,7 +1,8 @@
+package Principais;
+
 import Entidades.Computador;
 import Entidades.MemoriaRam;
 import Entidades.SistemaOperacional;
-import Entidades.Usuario;
 import Models.*;
 import com.github.britooo.looca.api.core.Looca;
 import com.github.britooo.looca.api.group.discos.Disco;
