@@ -14,16 +14,19 @@
         <list>
           <option value="login-mind-core" />
           <option value="login-mind-core" />
+          <option value="login-mind-core" />
         </list>
       </option>
       <option name="ignoredPackages">
         <list>
           <option value="com.google.guava:guava:31.1-jre" />
           <option value="com.mysql:mysql-connector-j:8.1.0" />
+          <option value="org.springframework:spring-core:5.2.25.RELEASE" />
         </list>
       </option>
       <option name="ignoredReasons">
         <list>
+          <option value="Not exploitable" />
           <option value="Not exploitable" />
           <option value="Not exploitable" />
         </list>

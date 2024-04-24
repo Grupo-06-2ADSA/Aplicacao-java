@@ -1,6 +1,7 @@
 package Entidades;
 
 import Models.UsuarioDAO;
+import Main.App;
 
 import java.util.Scanner;
 
@@ -17,7 +18,7 @@ public class Usuario {
         Scanner leitor = new Scanner(System.in);
 
         System.out.println();
-        System.out.println("****** Entre na sua conta ******");
+        System.out.println("******** Entre na sua conta ********");
         System.out.print("Email: ");
         String email = leitor.next();
 
@@ -26,7 +27,13 @@ public class Usuario {
 
         Usuario usuario = new Usuario(email, senha);
 
-        UsuarioDAO.verificarUsuario(usuario);
+        Boolean usuarioExiste = UsuarioDAO.verificarUsuario(usuario);
+
+        if (usuarioExiste){
+            System.out.println(" ");
+            System.out.println("******** Iniciando Captura Dos Dados ********");
+            App.CapturarDados();
+        }
     }
 
     public String getEmail() {

@@ -20,6 +20,7 @@ public class ComputadorDAO {
             rs = ps1.executeQuery();
 
             if (rs.next()){
+                System.out.println(" ");
                 System.out.println("Computador já existe!");
                 return false;
             }

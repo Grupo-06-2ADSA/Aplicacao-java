@@ -1,8 +1,9 @@
-package Principais;
+package Main;
 
 import Entidades.Computador;
 import Entidades.MemoriaRam;
 import Entidades.SistemaOperacional;
+import Entidades.Usuario;
 import Models.*;
 import com.github.britooo.looca.api.core.Looca;
 import com.github.britooo.looca.api.group.discos.Disco;
@@ -11,12 +12,34 @@ import com.github.britooo.looca.api.group.memoria.Memoria;
 import com.github.britooo.looca.api.group.processador.Processador;
 import com.github.britooo.looca.api.group.rede.Rede;
 import com.github.britooo.looca.api.group.sistema.Sistema;
+
+import java.time.LocalTime;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class App {
     public static void main(String[] args) {
-        Looca looca = new Looca();
+        System.out.println("""
+                Seja Bem Vindo(a) a
+                
+                **      **  **  **   **  *******         ********  **********  *********    *********
+                ** **** **  **  ***  **  **     **      **         **      **  **      **   **
+                **  **  **  **  ** * **  **      **    **          **      **  *********    *****
+                **      **  **  **  ***  **     **      **         **      **  **   **      **
+                **      **  **  **   **  *******         ********  **********  **     **    *********
+                
+                """);
 
+        Usuario.FazerLogin();
+    }
+
+    public static void CapturarDados(){
+        Looca looca = new Looca();
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+
+        Runnable task = () -> {
         Sistema sistema = looca.getSistema();
         Memoria memoria = looca.getMemoria();
         DiscoGrupo disco = looca.getGrupoDeDiscos();
@@ -82,5 +105,15 @@ public class App {
         MemoriaRamDAO.cadastrarRAM(memoriaRam);
         RedeDAO.cadastrarRede(rede00);
         ProcessadorDAO.cadastrarCPU(cpu);
+        };
+
+        executor.scheduleAtFixedRate(task, 0, 10, TimeUnit.SECONDS);
+
+        LocalTime horaAtual = LocalTime.now();
+
+        if (horaAtual.getHour() == 17){
+            executor.shutdown();
+        }
+
     }
 }
