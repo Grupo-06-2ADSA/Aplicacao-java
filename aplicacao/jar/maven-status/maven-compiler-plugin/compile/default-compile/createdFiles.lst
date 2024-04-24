@@ -1,0 +1,16 @@
+Models\UsuarioDAO.class
+Models\MemoriaRamDAO.class
+Entidades\Usuario.class
+Models\RedeDAO.class
+Entidades\SistemaOperacional.class
+Conexao\Conexao.class
+Entidades\Processador.class
+Entidades\Rede.class
+Models\DiscoDAO.class
+Main\App.class
+Models\ComputadorDAO.class
+Models\SistemaOperacionalDAO.class
+Entidades\MemoriaRam.class
+Entidades\Computador.class
+Entidades\Disco.class
+Models\ProcessadorDAO.class
