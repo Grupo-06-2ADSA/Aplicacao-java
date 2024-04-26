@@ -37,9 +37,9 @@ public class App {
 
     public static void CapturarDados(){
         Looca looca = new Looca();
-        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+//        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
-        Runnable task = () -> {
+//        Runnable task = () -> {
         Sistema sistema = looca.getSistema();
         Memoria memoria = looca.getMemoria();
         DiscoGrupo disco = looca.getGrupoDeDiscos();
@@ -49,6 +49,10 @@ public class App {
         // Sistemas Operacional
         String nomeSO = sistema.getSistemaOperacional();
         Long tempoAtivdadeSO = sistema.getTempoDeAtividade() / 3600; // em horas
+            System.out.println("------ Sistema Operacional ------");
+            System.out.println("Nome: " + nomeSO);
+            System.out.println("Tempo de atividade: " + tempoAtivdadeSO);
+
 
         // Memória RAM
         Double memoriaUso = Double.valueOf(memoria.getEmUso()) / 1e+9;
@@ -57,6 +61,10 @@ public class App {
         memoriaDisponivel = Math.round(memoriaDisponivel * 20.0) / 20.0;
         Double memoriaTotal = Double.valueOf(memoria.getTotal()) / 1e+9;
         memoriaTotal = Math.round(memoriaTotal * 20.0) / 20.0;
+            System.out.println("------ Mémoria RAM ------");
+            System.out.println("Mémoria em uso: " + memoriaUso);
+            System.out.println("Mémoria disponível: " + memoriaDisponivel);
+            System.out.println("Mémoria total: " + memoriaTotal);
 
         // Disco
         List<Disco> discos = disco.getDiscos();
@@ -66,6 +74,7 @@ public class App {
         Double escritas = 0.0;
         Double bytesEscrita = 0.0;
         Long tempoTranferencia = 0l;
+            System.out.println("------ Disco ------");
 
         for (Disco disco1 : discos) {
             tamanho = disco1.getTamanho() / 1e+9;
@@ -74,6 +83,13 @@ public class App {
             escritas = Double.valueOf(disco1.getEscritas());
             bytesEscrita = Double.valueOf(disco1.getBytesDeEscritas());
             tempoTranferencia = disco1.getTempoDeTransferencia();
+
+            System.out.println("Tamanha: " + tamanho);
+            System.out.println("Leituras: " + leituras);
+            System.out.println("Bytes de leitura: " + bytesLeitura);
+            System.out.println("Escritas: " + escritas);
+            System.out.println("Bytes de escrita: " + bytesEscrita);
+            System.out.println("Tempo de transferência: " + tempoTranferencia);
         }
 
         // Rede
@@ -82,38 +98,49 @@ public class App {
         Long bytesEnviados = rede.getGrupoDeInterfaces().getInterfaces().get(4).getBytesEnviados();
         Long pacotesRecebidos = rede.getGrupoDeInterfaces().getInterfaces().get(4).getPacotesRecebidos();
         Long pacotesEnviados = rede.getGrupoDeInterfaces().getInterfaces().get(4).getPacotesEnviados();
+            System.out.println("------ Rede ------");
+            System.out.println("Nome: " + nomeRede);
+            System.out.println("Bytes recebidos: " + bytesRecebidos);
+            System.out.println("Bytes enviados: " + bytesEnviados);
+            System.out.println("Pacotes recebidos: " + pacotesRecebidos);
+            System.out.println("Pacotes enviados: " + pacotesEnviados);
 
         // CPU
         String nomeCpu = processador.getNome();
         Double usoCPU = processador.getUso();
-
+            System.out.println("------ CPU ------");
+            System.out.println("Nome: " + nomeCpu);
+            System.out.println("Uso: " + usoCPU);
 
         // Máquina
         String hostName = rede.getParametros().getHostName();
         String ipv4 = String.valueOf((rede.getGrupoDeInterfaces().getInterfaces().get(4).getEnderecoIpv4()));
+            System.out.println("------ Máquina ------");
+            System.out.println("Hostname: " + hostName);
+            System.out.println("IPv4: " + ipv4);
 
-        Computador computador = new Computador(hostName, ipv4);
-        SistemaOperacional sistemaOperacional = new SistemaOperacional(nomeSO, tempoAtivdadeSO);
-        Entidades.Disco disco00 = new Entidades.Disco(tamanho, leituras, bytesLeitura, escritas, bytesEscrita, tempoTranferencia);
-        MemoriaRam memoriaRam = new MemoriaRam(memoriaUso, memoriaDisponivel, memoriaTotal);
-        Entidades.Rede rede00 = new Entidades.Rede(nomeRede, bytesRecebidos, bytesEnviados, pacotesRecebidos, pacotesEnviados);
-        Entidades.Processador cpu = new Entidades.Processador(nomeCpu, usoCPU);
+//        Computador computador = new Computador(hostName, ipv4);
+//        SistemaOperacional sistemaOperacional = new SistemaOperacional(nomeSO, tempoAtivdadeSO);
+//        Entidades.Disco disco00 = new Entidades.Disco(tamanho, leituras, bytesLeitura, escritas, bytesEscrita, tempoTranferencia);
+//        MemoriaRam memoriaRam = new MemoriaRam(memoriaUso, memoriaDisponivel, memoriaTotal);
+//        Entidades.Rede rede00 = new Entidades.Rede(nomeRede, bytesRecebidos, bytesEnviados, pacotesRecebidos, pacotesEnviados);
+//        Entidades.Processador cpu = new Entidades.Processador(nomeCpu, usoCPU);
 
-        ComputadorDAO.cadastrarComputador(computador);
-        SistemaOperacionalDAO.cadastrarSO(sistemaOperacional);
-        DiscoDAO.cadastrarDisco(disco00);
-        MemoriaRamDAO.cadastrarRAM(memoriaRam);
-        RedeDAO.cadastrarRede(rede00);
-        ProcessadorDAO.cadastrarCPU(cpu);
-        };
+//        ComputadorDAO.cadastrarComputador(computador);
+//        SistemaOperacionalDAO.cadastrarSO(sistemaOperacional);
+//        DiscoDAO.cadastrarDisco(disco00);
+//        MemoriaRamDAO.cadastrarRAM(memoriaRam);
+//        RedeDAO.cadastrarRede(rede00);
+//        ProcessadorDAO.cadastrarCPU(cpu);
+//        };
 
-        executor.scheduleAtFixedRate(task, 0, 10, TimeUnit.SECONDS);
+//        executor.scheduleAtFixedRate(task, 0, 10, TimeUnit.SECONDS);
 
         LocalTime horaAtual = LocalTime.now();
 
-        if (horaAtual.getHour() == 17){
-            executor.shutdown();
-        }
+//        if (horaAtual.getHour() == 17){
+//            executor.shutdown();
+//        }
 
     }
 }

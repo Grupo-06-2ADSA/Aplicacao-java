@@ -17,6 +17,9 @@ public class Usuario {
     public static void FazerLogin(){
         Scanner leitor = new Scanner(System.in);
 
+        String emailOficial = "leo@gmail.com";
+        String senhaOficial = "123456";
+
         System.out.println();
         System.out.println("******** Entre na sua conta ********");
         System.out.print("Email: ");
@@ -27,12 +30,15 @@ public class Usuario {
 
         Usuario usuario = new Usuario(email, senha);
 
-        Boolean usuarioExiste = UsuarioDAO.verificarUsuario(usuario);
+        //Boolean usuarioExiste = UsuarioDAO.verificarUsuario(usuario);
 
-        if (usuarioExiste){
+        if (email.equals(emailOficial) && senha.equals(senhaOficial)){
             System.out.println(" ");
             System.out.println("******** Iniciando Captura Dos Dados ********");
             App.CapturarDados();
+        } else {
+            System.out.println("Dados incorretos, tente novamente.");
+            FazerLogin();
         }
     }
 
