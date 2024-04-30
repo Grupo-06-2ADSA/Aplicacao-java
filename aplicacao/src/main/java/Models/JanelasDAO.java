@@ -7,7 +7,7 @@ import java.sql.PreparedStatement;
 
 public class JanelasDAO {
     public static boolean cadastrarJanelas(Janelas janelas){
-        String sql = "INSERT INTO LeituraJanelas (identificador, titulo, pid, totalJanelas) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO LeituraJanelas (idJanela, titulo, pid, totalJanelas) VALUES (?, ?, ?, ?)";
         PreparedStatement ps = null;
 
         try {

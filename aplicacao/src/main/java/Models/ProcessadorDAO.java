@@ -7,13 +7,14 @@ import java.sql.PreparedStatement;
 
 public class ProcessadorDAO {
     public static boolean cadastrarCPU(Processador processador){
-        String sql = "INSERT INTO leituraCPU (nome, emUso) VALUES (?, ?)";
+        String sql = "INSERT INTO leituraCPU (nome, emUso, temp) VALUES (?, ?, ?)";
         PreparedStatement ps = null;
 
         try {
             ps = Conexao.getConexao().prepareStatement(sql);
             ps.setString(1, processador.getNome());
             ps.setDouble(2, processador.getEmUso());
+            ps.setDouble(3, processador.getTemp());
             ps.execute();
 
             System.out.println("A CPU foi cadastrada com sucesso!");

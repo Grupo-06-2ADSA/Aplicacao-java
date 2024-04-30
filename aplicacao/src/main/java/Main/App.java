@@ -11,6 +11,7 @@ import com.github.britooo.looca.api.group.memoria.Memoria;
 import com.github.britooo.looca.api.group.processador.Processador;
 import com.github.britooo.looca.api.group.rede.Rede;
 import com.github.britooo.looca.api.group.sistema.Sistema;
+import com.github.britooo.looca.api.group.temperatura.Temperatura;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -64,6 +65,7 @@ public class App {
             Memoria memoria = looca.getMemoria();
             DiscoGrupo disco = looca.getGrupoDeDiscos();
             Processador processador = looca.getProcessador();
+            Temperatura temperatura = looca.getTemperatura();
 
 
             // Sistemas Operacional
@@ -111,8 +113,9 @@ public class App {
             // CPU
             String nomeCpu = processador.getNome();
             Double usoCPU = processador.getUso();
+            Double tempCPU = temperatura.getTemperatura();
                 System.out.println("------ CPU ------");
-            Entidades.Processador cpu = new Entidades.Processador(nomeCpu, usoCPU);
+            Entidades.Processador cpu = new Entidades.Processador(nomeCpu, usoCPU, tempCPU);
             ProcessadorDAO.cadastrarCPU(cpu);
 
         };
