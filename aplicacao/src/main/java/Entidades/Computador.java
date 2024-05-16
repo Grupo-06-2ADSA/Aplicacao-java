@@ -1,7 +1,7 @@
 package Entidades;
 
 public class Computador {
-    private String hostName;
+    private static String hostName;
     private String ipv4;
 
     public Computador(String hostName, String ipv4) {
@@ -9,7 +9,7 @@ public class Computador {
         this.ipv4 = ipv4;
     }
 
-    public String getHostName() {
+    public static String getHostName() {
         return hostName;
     }
 

@@ -12,7 +12,10 @@ import com.github.britooo.looca.api.group.memoria.Memoria;
 import com.github.britooo.looca.api.group.processador.Processador;
 import com.github.britooo.looca.api.group.rede.Rede;
 import com.github.britooo.looca.api.group.sistema.Sistema;
+import com.github.britooo.looca.api.group.temperatura.Temperatura;
+import org.json.JSONObject;
 
+import java.io.IOException;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -20,7 +23,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class App {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, InterruptedException {
         System.out.println("""
                 Seja Bem Vindo(a) a
                 
@@ -33,17 +36,25 @@ public class App {
                 """);
 
         Usuario.FazerLogin();
+        Looca looca = new Looca();
+        Rede rede = looca.getRede();
+
+
+        JSONObject json = new JSONObject();
+        json.put("text", "O usuário "+Usuario.getEmail()+ " Realizou login na máquina: "+rede.getParametros().getHostName());
+        Slack.sendMessage(json);
     }
 
-    public static void CapturarDados(){
+    public static void CapturarDados (){
         Looca looca = new Looca();
-//        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+       ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
-//        Runnable task = () -> {
+        Runnable task = () -> {
         Sistema sistema = looca.getSistema();
         Memoria memoria = looca.getMemoria();
         DiscoGrupo disco = looca.getGrupoDeDiscos();
         Processador processador = looca.getProcessador();
+        Temperatura temperatura = looca.getTemperatura();
         Rede rede = looca.getRede();
 
         // Sistemas Operacional
@@ -52,6 +63,20 @@ public class App {
             System.out.println("------ Sistema Operacional ------");
             System.out.println("Nome: " + nomeSO);
             System.out.println("Tempo de atividade: " + tempoAtivdadeSO);
+
+            if (tempoAtivdadeSO > 730){
+                JSONObject jsonSO = new JSONObject();
+                jsonSO.put("text", "Máquina "+Computador.getHostName()+" NECESSITA REINICIAR!!!");
+                try {
+                    Slack.sendMessage(jsonSO);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+
 
 
         // Memória RAM
@@ -66,7 +91,21 @@ public class App {
             System.out.println("Mémoria disponível: " + memoriaDisponivel);
             System.out.println("Mémoria total: " + memoriaTotal);
 
-        // Disco
+            if (memoriaDisponivel < 0.900){
+                JSONObject jsonRAM = new JSONObject();
+                jsonRAM.put("text", "Máquina "+Computador.getHostName()+" COM MEMÓRIA RAM SOBRECARREGADA");
+                try {
+                    Slack.sendMessage(jsonRAM);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+
+
+            // Disco
         List<Disco> discos = disco.getDiscos();
         Double tamanho = 0.0;
         Double leituras = 0.0;
@@ -84,7 +123,7 @@ public class App {
             bytesEscrita = Double.valueOf(disco1.getBytesDeEscritas());
             tempoTranferencia = disco1.getTempoDeTransferencia();
 
-            System.out.println("Tamanha: " + tamanho);
+            System.out.println("Tamanho: " + tamanho);
             System.out.println("Leituras: " + leituras);
             System.out.println("Bytes de leitura: " + bytesLeitura);
             System.out.println("Escritas: " + escritas);
@@ -105,12 +144,37 @@ public class App {
             System.out.println("Pacotes recebidos: " + pacotesRecebidos);
             System.out.println("Pacotes enviados: " + pacotesEnviados);
 
+//            JSONObject jsonREDE = new JSONObject();
+//            jsonREDE.put("text", "O usuário "+Usuario.getEmail()+ " Realizou login");
+//            try {
+//                Slack.sendMessage(jsonREDE);
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
+
         // CPU
         String nomeCpu = processador.getNome();
         Double usoCPU = processador.getUso();
+        Double tempCPU = temperatura.getTemperatura();
             System.out.println("------ CPU ------");
             System.out.println("Nome: " + nomeCpu);
             System.out.println("Uso: " + usoCPU);
+        System.out.println("Temperatura: "+tempCPU);
+
+            if (tempCPU > 70.0){
+                JSONObject jsonCPU = new JSONObject();
+                jsonCPU.put("text", "Temperatura da Máquina: "+ Computador.getHostName()+" MAIOR QUE 70º!!!");
+                try {
+                    Slack.sendMessage(jsonCPU);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
 
         // Máquina
         String hostName = rede.getParametros().getHostName();
@@ -119,22 +183,22 @@ public class App {
             System.out.println("Hostname: " + hostName);
             System.out.println("IPv4: " + ipv4);
 
-//        Computador computador = new Computador(hostName, ipv4);
-//        SistemaOperacional sistemaOperacional = new SistemaOperacional(nomeSO, tempoAtivdadeSO);
-//        Entidades.Disco disco00 = new Entidades.Disco(tamanho, leituras, bytesLeitura, escritas, bytesEscrita, tempoTranferencia);
-//        MemoriaRam memoriaRam = new MemoriaRam(memoriaUso, memoriaDisponivel, memoriaTotal);
-//        Entidades.Rede rede00 = new Entidades.Rede(nomeRede, bytesRecebidos, bytesEnviados, pacotesRecebidos, pacotesEnviados);
-//        Entidades.Processador cpu = new Entidades.Processador(nomeCpu, usoCPU);
+        Computador computador = new Computador(hostName, ipv4);
+        SistemaOperacional sistemaOperacional = new SistemaOperacional(nomeSO, tempoAtivdadeSO);
+        Entidades.Disco disco00 = new Entidades.Disco(tamanho, leituras, bytesLeitura, escritas, bytesEscrita, tempoTranferencia);
+        MemoriaRam memoriaRam = new MemoriaRam(memoriaUso, memoriaDisponivel, memoriaTotal);
+        Entidades.Rede rede00 = new Entidades.Rede(nomeRede, bytesRecebidos, bytesEnviados, pacotesRecebidos, pacotesEnviados);
+        Entidades.Processador cpu = new Entidades.Processador(nomeCpu, usoCPU, tempCPU);
 
-//        ComputadorDAO.cadastrarComputador(computador);
-//        SistemaOperacionalDAO.cadastrarSO(sistemaOperacional);
-//        DiscoDAO.cadastrarDisco(disco00);
-//        MemoriaRamDAO.cadastrarRAM(memoriaRam);
-//        RedeDAO.cadastrarRede(rede00);
-//        ProcessadorDAO.cadastrarCPU(cpu);
-//        };
+        ComputadorDAO.cadastrarComputador(computador);
+        SistemaOperacionalDAO.cadastrarSO(sistemaOperacional);
+        DiscoDAO.cadastrarDisco(disco00);
+        MemoriaRamDAO.cadastrarRAM(memoriaRam);
+        RedeDAO.cadastrarRede(rede00);
+        ProcessadorDAO.cadastrarCPU(cpu);
+        };
 
-//        executor.scheduleAtFixedRate(task, 0, 10, TimeUnit.SECONDS);
+        executor.scheduleAtFixedRate(task, 0, 10, TimeUnit.SECONDS);
 
         LocalTime horaAtual = LocalTime.now();
 
