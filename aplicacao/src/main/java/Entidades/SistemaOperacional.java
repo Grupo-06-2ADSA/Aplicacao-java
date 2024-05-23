@@ -3,10 +3,13 @@ package Entidades;
 public class SistemaOperacional {
     private String nome;
     private Long tempoAtividade;
+    private Integer fkMaquina;
 
-    public SistemaOperacional(String nome, Long tempoAtividade) {
+
+    public SistemaOperacional(String nome, Long tempoAtividade, Integer fkMaquina) {
         this.nome = nome;
         this.tempoAtividade = tempoAtividade;
+        this.fkMaquina = fkMaquina;
     }
 
     public String getNome() {
@@ -23,5 +26,13 @@ public class SistemaOperacional {
 
     public void setTempoAtividade(Long tempoAtividade) {
         this.tempoAtividade = tempoAtividade;
+    }
+
+    public Integer getFkMaquina() {
+        return fkMaquina;
+    }
+
+    public void setFkMaquina(Integer fkMaquina) {
+        this.fkMaquina = fkMaquina;
     }
 }
