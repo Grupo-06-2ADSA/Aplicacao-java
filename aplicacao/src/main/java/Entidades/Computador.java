@@ -9,7 +9,7 @@ public class Computador {
         this.ipv4 = ipv4;
     }
 
-    public static String getHostName() {
+    public String getHostName() {
         return hostName;
     }
 

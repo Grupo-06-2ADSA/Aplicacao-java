@@ -55,8 +55,7 @@ public class App {
         Integer fkMaquina = ComputadorDAO.buscarIdMaquina(computador);
 
         if (!maquinaExiste){
-            System.out.printf("A máquina %s não está cadastrada, acesse o sistema Web para efetuar o cadastro e tente novamente%n", hostName);
-            System.exit(0);
+            ComputadorDAO.cadastrarComputador(computador);
         }
 
         Runnable taskSO = () -> {
@@ -68,7 +67,7 @@ public class App {
 
             if (tempoAtivdadeSO > 730) {
                 JSONObject jsonSO = new JSONObject();
-                jsonSO.put("text", "Máquina " + Computador.getHostName() + " NECESSITA REINICIAR!!!");
+                jsonSO.put("text", "Máquina " + computador.getHostName() + " NECESSITA REINICIAR!!!");
                 try {
                     Slack.sendMessage(jsonSO);
                 } catch (IOException | InterruptedException e) {
@@ -100,7 +99,7 @@ public class App {
 
             if (memoriaDisponivel < 0.900){
                 JSONObject jsonRAM = new JSONObject();
-                jsonRAM.put("text", "Máquina "+Computador.getHostName()+" COM MEMÓRIA RAM SOBRECARREGADA");
+                jsonRAM.put("text", "Máquina "+ computador.getHostName()+ " COM MEMÓRIA RAM SOBRECARREGADA");
                 try {
                     Slack.sendMessage(jsonRAM);
                 } catch (IOException | InterruptedException e) {
@@ -153,7 +152,7 @@ public class App {
 
             if (tempCPU > 70.0){
                 JSONObject jsonCPU = new JSONObject();
-                jsonCPU.put("text", "Temperatura da Máquina: "+ Computador.getHostName()+" MAIOR QUE 70º!!!");
+                jsonCPU.put("text", "Temperatura da Máquina: " + computador.getHostName() + " MAIOR QUE 70º!!!");
                 try {
                     Slack.sendMessage(jsonCPU);
                 } catch (IOException | InterruptedException e) {
