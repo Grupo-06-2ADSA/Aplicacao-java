@@ -24,15 +24,17 @@ public class Usuario {
 
         System.out.println("+-------------------------------------------+");
         System.out.println("|            Entre na sua conta              ");
+        System.out.println("|   Pressione a tecla [ENTER] para começar   ");
+
+        leitor.nextLine();
 
         System.out.print("| Email: ");
         String email = leitor.next();
 
-        // Verifica se há mais entradas disponíveis antes de solicitar a senha
         System.out.print("| Senha: ");
         String senha = leitor.next();
-        System.out.println("+-------------------------------------------+");
 
+        System.out.println("+-------------------------------------------+");
 
         Usuario usuario = new Usuario(email, senha);
 
@@ -50,7 +52,6 @@ public class Usuario {
             System.out.println("Dados incorretos, tente novamente.");
             FazerLogin(); // Chama o método fazerLogin novamente após uma tentativa malsucedida
         }
-
 
     }
 
