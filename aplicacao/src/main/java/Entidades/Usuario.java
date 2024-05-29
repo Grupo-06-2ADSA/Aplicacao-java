@@ -24,18 +24,19 @@ public class Usuario {
             Scanner leitor = new Scanner(System.in);
             Scanner enter = new Scanner(System.in);
 
-            System.out.println("+-------------------------------------------+");
-            System.out.println("|            Entre na sua conta              ");
-            System.out.println("|   Pressione a tecla [ENTER] para começar   ");
+            System.out.println("+----------------------------------------------+");
+            System.out.println("|            Entrando na sua conta              ");
 
-            if (enter.hasNextLine()) {
-                System.out.print("| Email: ");
-                String email = leitor.nextLine();
+//                System.out.print("| Email: ");
+//                String email = leitor.nextLine();
+//
+//                System.out.print("| Senha: ");
+//                String senha = leitor.nextLine();
 
-                System.out.print("| Senha: ");
-                String senha = leitor.nextLine();
+            String email = "luan@gmail.com";
+            String senha = "654321";
 
-                System.out.println("+-------------------------------------------+");
+                System.out.println("+----------------------------------------------+");
 
                 Usuario usuario = new Usuario(email, senha);
 
@@ -43,19 +44,16 @@ public class Usuario {
 
                 if (usuarioExiste) {
                     App.CapturarDados();
-//                    Looca looca = new Looca();
-//                    Rede rede = looca.getRede();
-//
-//                    JSONObject json = new JSONObject();
-//                    json.put("text", "O usuário " + Usuario.getEmail() + " Realizou login na máquina: " + rede.getParametros().getHostName());
-//                    Slack.sendMessage(json);
+                    Looca looca = new Looca();
+                    Rede rede = looca.getRede();
+
+                    JSONObject json = new JSONObject();
+                    json.put("text", "O usuário " + Usuario.getEmail() + " Realizou login na máquina: " + rede.getParametros().getHostName());
+                    Slack.sendMessage(json);
                 } else {
                     System.out.println("Dados incorretos, tente novamente.");
                     FazerLogin(); // Chama o método fazerLogin novamente após uma tentativa malsucedida
                 }
-            } else {
-                System.out.println("Leitor não disponível.");
-            }
         } catch (Exception e) {
             System.out.println("Erro ao ler entrada do usuário: " + e.getMessage());
         }
