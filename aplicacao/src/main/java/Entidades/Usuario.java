@@ -24,40 +24,34 @@ public class Usuario {
 
         System.out.println("+-------------------------------------------+");
         System.out.println("|            Entre na sua conta              ");
-        System.out.println("|   Pressione a tecla [ENTER] para começar   ");
 
-        if (leitor.hasNextLine()) {
-            System.out.print("| Email: ");
-            String email = leitor.next();
+        System.out.print("| Email: ");
+        String email = leitor.next();
 
-            // Verifica se há mais entradas disponíveis antes de solicitar a senha
-            if (leitor.hasNextLine()) {
-                System.out.print("| Senha: ");
-                String senha = leitor.next();
-                System.out.println("+-------------------------------------------+");
+        // Verifica se há mais entradas disponíveis antes de solicitar a senha
+        System.out.print("| Senha: ");
+        String senha = leitor.next();
+        System.out.println("+-------------------------------------------+");
 
-                Usuario usuario = new Usuario(email, senha);
 
-                boolean usuarioExiste = UsuarioDAO.verificarUsuario(usuario);
+        Usuario usuario = new Usuario(email, senha);
 
-                if (usuarioExiste) {
-                    App.CapturarDados();
+        boolean usuarioExiste = UsuarioDAO.verificarUsuario(usuario);
+
+        if (usuarioExiste) {
+            App.CapturarDados();
 //                    Looca looca = new Looca();
 //                    Rede rede = looca.getRede();
 //
 //                    JSONObject json = new JSONObject();
 //                    json.put("text", "O usuário " + Usuario.getEmail() + " Realizou login na máquina: " + rede.getParametros().getHostName());
 //                    Slack.sendMessage(json);
-                } else {
-                    System.out.println("Dados incorretos, tente novamente.");
-                    FazerLogin(); // Chama o método fazerLogin novamente após uma tentativa malsucedida
-                }
-            } else {
-                System.out.println("Entrada de senha não fornecida.");
-            }
         } else {
-            System.out.println("Entrada de email não fornecida.");
+            System.out.println("Dados incorretos, tente novamente.");
+            FazerLogin(); // Chama o método fazerLogin novamente após uma tentativa malsucedida
         }
+
+
     }
 
     public static String getEmail() {
