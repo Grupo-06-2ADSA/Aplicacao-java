@@ -34,12 +34,6 @@ public class App {
                 """);
 
         Usuario.FazerLogin();
-        Looca looca = new Looca();
-        Rede rede = looca.getRede();
-
-        JSONObject json = new JSONObject();
-        json.put("text", "O usuário "+Usuario.getEmail()+ " Realizou login na máquina: "+rede.getParametros().getHostName());
-        Slack.sendMessage(json);
     }
 
     public static void CapturarDados (){
@@ -65,15 +59,15 @@ public class App {
             Long tempoAtivdadeSO = sistema.getTempoDeAtividade() / 3600; // em horas
             System.out.println("------ Sistema Operacional ------");
 
-            if (tempoAtivdadeSO > 730) {
-                JSONObject jsonSO = new JSONObject();
-                jsonSO.put("text", "Máquina " + computador.getHostName() + " NECESSITA REINICIAR!!!");
-                try {
-                    Slack.sendMessage(jsonSO);
-                } catch (IOException | InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+//            if (tempoAtivdadeSO > 730) {
+//                JSONObject jsonSO = new JSONObject();
+//                jsonSO.put("text", "Máquina " + computador.getHostName() + " NECESSITA REINICIAR!!!");
+//                try {
+//                    Slack.sendMessage(jsonSO);
+//                } catch (IOException | InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
 
             SistemaOperacional sistemaOperacional = new SistemaOperacional(nomeSO, tempoAtivdadeSO, fkMaquina);
             SistemaOperacionalDAO.cadastrarSO(sistemaOperacional);
@@ -97,15 +91,15 @@ public class App {
         memoriaTotal = Math.round(memoriaTotal * 20.0) / 20.0;
             System.out.println("------ Mémoria RAM ------");
 
-            if (memoriaDisponivel < 0.900){
-                JSONObject jsonRAM = new JSONObject();
-                jsonRAM.put("text", "Máquina "+ computador.getHostName()+ " COM MEMÓRIA RAM SOBRECARREGADA");
-                try {
-                    Slack.sendMessage(jsonRAM);
-                } catch (IOException | InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+//            if (memoriaDisponivel < 0.900){
+//                JSONObject jsonRAM = new JSONObject();
+//                jsonRAM.put("text", "Máquina "+ computador.getHostName()+ " COM MEMÓRIA RAM SOBRECARREGADA");
+//                try {
+//                    Slack.sendMessage(jsonRAM);
+//                } catch (IOException | InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
 
         MemoriaRam memoriaRam = new MemoriaRam(memoriaUso, memoriaDisponivel, memoriaTotal, fkMaquina);
         MemoriaRamDAO.cadastrarRAM(memoriaRam);
@@ -150,15 +144,15 @@ public class App {
         Double tempCPU = temperatura.getTemperatura();
         System.out.println("------ CPU ------");
 
-            if (tempCPU > 70.0){
-                JSONObject jsonCPU = new JSONObject();
-                jsonCPU.put("text", "Temperatura da Máquina: " + computador.getHostName() + " MAIOR QUE 70º!!!");
-                try {
-                    Slack.sendMessage(jsonCPU);
-                } catch (IOException | InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+//            if (tempCPU > 70.0){
+//                JSONObject jsonCPU = new JSONObject();
+//                jsonCPU.put("text", "Temperatura da Máquina: " + computador.getHostName() + " MAIOR QUE 70º!!!");
+//                try {
+//                    Slack.sendMessage(jsonCPU);
+//                } catch (IOException | InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
 
         Entidades.Processador cpu = new Entidades.Processador(nomeCpu, usoCPU, tempCPU, fkMaquina);
         ProcessadorDAO.cadastrarCPU(cpu);

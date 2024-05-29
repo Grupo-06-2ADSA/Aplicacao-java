@@ -1,8 +1,13 @@
 package Entidades;
 
+import Main.Slack;
 import Models.UsuarioDAO;
 import Main.App;
+import com.github.britooo.looca.api.core.Looca;
+import com.github.britooo.looca.api.group.rede.Rede;
+import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Usuario {
@@ -14,7 +19,7 @@ public class Usuario {
         this.senha = senha;
     }
 
-    public static void FazerLogin(){
+    public static void FazerLogin() throws IOException, InterruptedException {
         Scanner leitor = new Scanner(System.in);
 
         System.out.println("+-------------------------------------------+");
@@ -37,6 +42,12 @@ public class Usuario {
 
                 if (usuarioExiste) {
                     App.CapturarDados();
+//                    Looca looca = new Looca();
+//                    Rede rede = looca.getRede();
+//
+//                    JSONObject json = new JSONObject();
+//                    json.put("text", "O usuário " + Usuario.getEmail() + " Realizou login na máquina: " + rede.getParametros().getHostName());
+//                    Slack.sendMessage(json);
                 } else {
                     System.out.println("Dados incorretos, tente novamente.");
                     FazerLogin(); // Chama o método fazerLogin novamente após uma tentativa malsucedida
