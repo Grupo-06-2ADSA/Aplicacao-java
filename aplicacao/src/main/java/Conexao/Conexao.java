@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Conexao {
-        private static final String url = "jdbc:mysql://localhost:3306/MindCore";
+        private static final String url = "jdbc:mysql://mysql:3306/MindCore";
         // jdbc:mysql://localhost:porta/bancodedados
         private static final String user = "mindcore"; // nome do seu usuário
         private static final String password = "mindcore123grupo6"; // sua senha
