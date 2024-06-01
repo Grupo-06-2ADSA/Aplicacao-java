@@ -1,0 +1,22 @@
+version: '3.3'
+services:
+ bd:
+  container_name: bd-mindcore
+  build: .
+  image: helosalgado/atividadeso:v1
+  restart: always
+  ports:
+  - "3307:3306"
+
+ java_app:
+    container_name: javaApp
+    build: .
+    image: helosalgado/atividadeso:app
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - bd
+
+volumes:
+ mysql_data:

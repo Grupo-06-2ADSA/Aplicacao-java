@@ -5,6 +5,7 @@ import Models.*;
 import com.github.britooo.looca.api.core.Looca;
 import com.github.britooo.looca.api.group.discos.Disco;
 import com.github.britooo.looca.api.group.discos.DiscoGrupo;
+import com.github.britooo.looca.api.group.discos.Volume;
 import com.github.britooo.looca.api.group.janelas.Janela;
 import com.github.britooo.looca.api.group.janelas.JanelaGrupo;
 import com.github.britooo.looca.api.group.memoria.Memoria;
@@ -15,6 +16,8 @@ import com.github.britooo.looca.api.group.temperatura.Temperatura;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -36,19 +39,18 @@ public class App {
         Usuario.FazerLogin();
     }
 
-    public static void CapturarDados (){
+    public static void CapturarDados() {
         Looca looca = new Looca();
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
         // Máquina
         String hostName = looca.getRede().getParametros().getHostName();
-        String ipv4 = String.valueOf((looca.getRede()).getGrupoDeInterfaces().getInterfaces().get(4).getEnderecoIpv4());
+        String ipv4 = String.valueOf((looca.getRede()).getGrupoDeInterfaces().getInterfaces().get(0).getEnderecoIpv4());
         Computador computador = new Computador(hostName, ipv4);
 
         boolean maquinaExiste = ComputadorDAO.verificarComputador(computador);
-        Integer fkMaquina = ComputadorDAO.buscarIdMaquina(computador);
 
-        if (!maquinaExiste){
+        if (!maquinaExiste) {
             ComputadorDAO.cadastrarComputador(computador);
         }
 
@@ -69,31 +71,36 @@ public class App {
 //                }
 //            }
 
-            SistemaOperacional sistemaOperacional = new SistemaOperacional(nomeSO, tempoAtivdadeSO, fkMaquina);
-            SistemaOperacionalDAO.cadastrarSO(sistemaOperacional);
+            SistemaOperacional sistemaOperacional = new SistemaOperacional(nomeSO, tempoAtivdadeSO, hostName);
+
+            try {
+                SistemaOperacionalDAO.cadastrarSO(sistemaOperacional);
+            } catch (Exception e) {
+                System.out.println("Erro ao realizar o cadastro: " + e.getMessage());
+            }
         };
 
         executor.scheduleAtFixedRate(taskSO, 0, 2, TimeUnit.HOURS);
 
 
         Runnable task = () -> {
-        Memoria memoria = looca.getMemoria();
-        DiscoGrupo disco = looca.getGrupoDeDiscos();
-        Processador processador = looca.getProcessador();
-        Temperatura temperatura = looca.getTemperatura();
+            Memoria memoria = looca.getMemoria();
+            DiscoGrupo disco = looca.getGrupoDeDiscos();
+            Processador processador = looca.getProcessador();
+            Temperatura temperatura = looca.getTemperatura();
 
-        // Memória RAM
-        Double memoriaUso = Double.valueOf(memoria.getEmUso()) / 1e+9;
-        memoriaUso = Math.round(memoriaUso * 20.0) / 20.0;
-        Double memoriaDisponivel = Double.valueOf(memoria.getDisponivel()) / 1e+9;
-        memoriaDisponivel = Math.round(memoriaDisponivel * 20.0) / 20.0;
-        Double memoriaTotal = Double.valueOf(memoria.getTotal()) / 1e+9;
-        memoriaTotal = Math.round(memoriaTotal * 20.0) / 20.0;
+            // Memória RAM
+            Double memoriaUso = Double.valueOf(memoria.getEmUso()) / 1e+9;
+            memoriaUso = Math.round(memoriaUso * 20.0) / 20.0;
+            Double memoriaDisponivel = Double.valueOf(memoria.getDisponivel()) / 1e+9;
+            memoriaDisponivel = Math.round(memoriaDisponivel * 20.0) / 20.0;
+            Double memoriaTotal = Double.valueOf(memoria.getTotal()) / 1e+9;
+            memoriaTotal = Math.round(memoriaTotal * 20.0) / 20.0;
             System.out.println("------ Mémoria RAM ------");
 
-            if (memoriaDisponivel < 0.900){
+            if (memoriaDisponivel < 0.900) {
                 JSONObject jsonRAM = new JSONObject();
-                jsonRAM.put("text", "Máquina "+ computador.getHostName()+ " COM MEMÓRIA RAM SOBRECARREGADA");
+                jsonRAM.put("text", "Máquina " + computador.getHostName() + " COM MEMÓRIA RAM SOBRECARREGADA");
                 try {
                     Slack.sendMessage(jsonRAM);
                 } catch (IOException | InterruptedException e) {
@@ -101,32 +108,36 @@ public class App {
                 }
             }
 
-        MemoriaRam memoriaRam = new MemoriaRam(memoriaUso, memoriaDisponivel, memoriaTotal, fkMaquina);
-        MemoriaRamDAO.cadastrarRAM(memoriaRam);
+            MemoriaRam memoriaRam = new MemoriaRam(memoriaUso, memoriaDisponivel, memoriaTotal, hostName);
 
+            try {
+                MemoriaRamDAO.cadastrarRAM(memoriaRam);
+            } catch (Exception e) {
+                System.out.println("Erro ao realizar o cadastro: " + e.getMessage());
+            }
 
             // Disco
-        List<Disco> discos = disco.getDiscos();
-        Double tamanho = 0.0;
-        Double leituras = 0.0;
-        Double bytesLeitura = 0.0;
-        Double escritas = 0.0;
-        Double bytesEscrita = 0.0;
-        Long tempoTranferencia = 0l;
-        System.out.println("------ Disco ------");
+            Long disponivel = 0l;
+            Long total = 0l;
+            Long emUso = 0l;
 
-        for (Disco disco1 : discos) {
-            tamanho = disco1.getTamanho() / 1e+9;
-            leituras = Double.valueOf(disco1.getLeituras());
-            bytesLeitura = Double.valueOf(disco1.getBytesDeLeitura());
-            escritas = Double.valueOf(disco1.getEscritas());
-            bytesEscrita = Double.valueOf(disco1.getBytesDeEscritas());
-            tempoTranferencia = disco1.getTempoDeTransferencia();
-        }
+            System.out.println("------ Disco ------");
 
-        Entidades.Disco disco00 = new Entidades.Disco(tamanho, leituras, bytesLeitura, escritas, bytesEscrita, tempoTranferencia, fkMaquina);
-        DiscoDAO.cadastrarDisco(disco00);
+            List<Volume> grupoDiscos = disco.getVolumes();
 
+            for (Volume grupoDisco : grupoDiscos) {
+                disponivel = grupoDisco.getDisponivel();
+                total = grupoDisco.getTotal();
+                emUso = total - disponivel;
+            }
+
+            Entidades.Disco disco00 = new Entidades.Disco(disponivel, total, emUso, hostName);
+
+            try {
+                DiscoDAO.cadastrarDisco(disco00);
+            } catch (Exception e) {
+                System.out.println("Erro ao realizar o cadastro: " + e.getMessage());
+            }
 
 //            JSONObject jsonREDE = new JSONObject();
 //            jsonREDE.put("text", "O usuário "+Usuario.getEmail()+ " Realizou login");
@@ -138,47 +149,62 @@ public class App {
 //                throw new RuntimeException(e);
 //            }
 
-        // CPU
-        String nomeCpu = processador.getNome();
-        Double usoCPU = processador.getUso();
-        Double tempCPU = temperatura.getTemperatura();
-        System.out.println("------ CPU ------");
+            // CPU
+            String nomeCpu = processador.getNome();
+            Double usoCPU = processador.getUso();
+            Double tempCPU = temperatura.getTemperatura();
+            System.out.println("------ CPU ------");
+            String nomeSO = looca.getSistema().getSistemaOperacional();
 
-            if (tempCPU > 70.0){
-                JSONObject jsonCPU = new JSONObject();
-                jsonCPU.put("text", "Temperatura da Máquina: " + computador.getHostName() + " MAIOR QUE 70º!!!");
-                try {
-                    Slack.sendMessage(jsonCPU);
-                } catch (IOException | InterruptedException e) {
-                    throw new RuntimeException(e);
+            if (nomeSO.contains("Windows")){
+                if (tempCPU > 70.0) {
+                    JSONObject jsonCPU = new JSONObject();
+                    jsonCPU.put("text", "Temperatura da Máquina: " + computador.getHostName() + " MAIOR QUE 70º!!!");
+                    try {
+                        Slack.sendMessage(jsonCPU);
+                    } catch (IOException | InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
 
-        Entidades.Processador cpu = new Entidades.Processador(nomeCpu, usoCPU, tempCPU, fkMaquina);
-        ProcessadorDAO.cadastrarCPU(cpu);
+            Entidades.Processador cpu = new Entidades.Processador(nomeCpu, usoCPU, tempCPU, hostName);
 
-        // JanelasJanelaGrupo
-        JanelaGrupo janelas = looca.getGrupoDeJanelas();
+            try {
+                ProcessadorDAO.cadastrarCPU(cpu);
+            } catch (Exception e) {
+                System.out.println("Erro ao realizar o cadastro: " + e.getMessage());
+            }
 
-        List<Janela> janela1 = janelas.getJanelas();
-        Long idJanela;
-        String titulo;
-        Long pidJanela;
+            if (nomeSO.contains("Windows")) {
+                // JanelasJanelaGrupo
+                JanelaGrupo janelas = looca.getGrupoDeJanelas();
 
-        Integer totalJanelas = janelas.getTotalJanelas();
-        System.out.println("------ Janelas ------");
+                List<Janela> janela1 = janelas.getJanelas();
+                Long idJanela;
+                String titulo;
+                Long pidJanela;
 
-        for (Janela janela : janela1) {
-            idJanela = janela.getJanelaId();
-            titulo = janela.getTitulo();
-            pidJanela = janela.getPid();
+                Integer totalJanelas = janelas.getTotalJanelas();
+                System.out.println("------ Janelas ------");
 
-            Entidades.Janelas janela00 = new Janelas(idJanela, titulo, pidJanela, totalJanelas, fkMaquina);
+                for (Janela janela : janela1) {
+                    idJanela = janela.getJanelaId();
+                    titulo = janela.getTitulo();
+                    pidJanela = janela.getPid();
 
-                if (titulo != null && !titulo.isEmpty()){
-                    JanelasDAO.cadastrarJanelas(janela00);
+                    Entidades.Janelas janela00 = new Janelas(idJanela, titulo, pidJanela, totalJanelas, hostName);
+
+                    try {
+                        if (titulo != null && !titulo.isEmpty()) {
+                            JanelasDAO.cadastrarJanelas(janela00);
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Erro ao realizar o cadastro: " + e.getMessage());
+                    }
                 }
             }
+
         };
 
         executor.scheduleAtFixedRate(task, 0, 10, TimeUnit.SECONDS);

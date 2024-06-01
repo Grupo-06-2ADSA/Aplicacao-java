@@ -1,0 +1,17 @@
+Entidades\Janelas.class
+Models\UsuarioDAO.class
+Models\MemoriaRamDAO.class
+Entidades\Usuario.class
+Models\DiscoDAO.class
+Main\App.class
+Models\ComputadorDAO.class
+Models\SistemaOperacionalDAO.class
+Entidades\MemoriaRam.class
+Entidades\Computador.class
+Main\Slack.class
+Entidades\SistemaOperacional.class
+Conexao\Conexao.class
+Entidades\Processador.class
+Models\JanelasDAO.class
+Entidades\Disco.class
+Models\ProcessadorDAO.class

@@ -4,10 +4,9 @@ public class MemoriaRam {
     private Double emUso;
     private Double disponivel;
     private Double total;
-    private Integer fkMaquina;
+    private String fkMaquina;
 
-
-    public MemoriaRam(Double emUso, Double disponivel, Double total, Integer fkMaquina) {
+    public MemoriaRam(Double emUso, Double disponivel, Double total, String fkMaquina) {
         this.emUso = emUso;
         this.disponivel = disponivel;
         this.total = total;
@@ -38,11 +37,10 @@ public class MemoriaRam {
         this.total = total;
     }
 
-    public Integer getFkMaquina() {
+    public String getFkMaquina() {
         return fkMaquina;
     }
-
-    public void setFkMaquina(Integer fkMaquina) {
+    public void setFkMaquina(String fkMaquina) {
         this.fkMaquina = fkMaquina;
     }
 }

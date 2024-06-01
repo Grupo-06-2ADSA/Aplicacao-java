@@ -4,14 +4,11 @@ import Main.Slack;
 import Models.UsuarioDAO;
 import Main.App;
 import com.github.britooo.looca.api.core.Looca;
-import com.github.britooo.looca.api.group.rede.Rede;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.util.Scanner;
 
 public class Usuario {
-    private static String email;
+    private String email;
     private String senha;
 
     public Usuario(String email, String senha) {
@@ -19,60 +16,43 @@ public class Usuario {
         this.senha = senha;
     }
 
-    public static void FazerLogin() throws IOException, InterruptedException {
+    public static void FazerLogin() {
         try {
-            Scanner leitor = new Scanner(System.in);
-            Scanner enter = new Scanner(System.in);
-
-            System.out.println("+----------------------------------------------+");
-            System.out.println("|            Entrando na sua conta              ");
-
-//                System.out.print("| Email: ");
-//                String email = leitor.nextLine();
-//
-//                System.out.print("| Senha: ");
-//                String senha = leitor.nextLine();
-
             String email = "luan@gmail.com";
             String senha = "654321";
 
-                System.out.println("+----------------------------------------------+");
+            System.out.println("+----------------------------------------------+");
+            System.out.println("|            Entrando na sua conta             |");
+            System.out.println("| Usuario: %s".formatted(email));
+            System.out.println("+----------------------------------------------+");
 
-                Usuario usuario = new Usuario(email, senha);
+            Usuario usuario = new Usuario(email, senha);
 
-                boolean usuarioExiste = UsuarioDAO.verificarUsuario(usuario);
+            boolean usuarioExiste = UsuarioDAO.verificarUsuario(usuario);
 
-                if (usuarioExiste) {
-                    App.CapturarDados();
-                    Looca looca = new Looca();
-                    Rede rede = looca.getRede();
-
-                    JSONObject json = new JSONObject();
-                    json.put("text", "O usuário " + Usuario.getEmail() + " Realizou login na máquina: " + rede.getParametros().getHostName());
-                    Slack.sendMessage(json);
-                } else {
-                    System.out.println("Dados incorretos, tente novamente.");
-                    FazerLogin(); // Chama o método fazerLogin novamente após uma tentativa malsucedida
-                }
+            if (usuarioExiste) {
+                App.CapturarDados();
+//                Looca looca = new Looca();
+//
+//                JSONObject json = new JSONObject();
+//                json.put("text", "O usuário " + usuario.getEmail() + " Realizou login na máquina: " + looca.getRede().getParametros().getHostName());
+//                Slack.sendMessage(json);
+            } else {
+                System.out.println("Usuário não encontrado...");
+            }
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("Erro ao verificar usuário: Índice fora dos limites - " + e.getMessage());
         } catch (Exception e) {
-            System.out.println("Erro ao ler entrada do usuário: " + e.getMessage());
+            System.out.println("Erro ao verificar usuário: " + e.getMessage());
         }
     }
 
 
-    public static String getEmail() {
+    public String getEmail() {
         return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getSenha() {
         return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
     }
 }

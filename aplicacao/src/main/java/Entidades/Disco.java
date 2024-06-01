@@ -1,53 +1,35 @@
 package Entidades;
 
 public class Disco {
-    private Double tamanho;
-    private Double leituras;
-    private Double bytesLeitura;
-    private Double escritas;
-    private Double bytesEscrita;
-    private Long tempoTranferencia;
-    private Integer fkMaquina;
+    private Long disponivel;
+    private Long total;
+    private Long emUso;
+    private String fkMaquina;
 
-    public Disco(Double tamanho, Double leituras, Double bytesLeitura, Double escritas, Double bytesEscrita, Long tempoTranferencia, Integer fkMaquina) {
-        this.tamanho = tamanho;
-        this.leituras = leituras;
-        this.bytesLeitura = bytesLeitura;
-        this.escritas = escritas;
-        this.bytesEscrita = bytesEscrita;
-        this.tempoTranferencia = tempoTranferencia;
+    public Disco(Long disponivel, Long total, Long emUso, String fkMaquina) {
+        this.disponivel = disponivel;
+        this.total = total;
+        this.emUso = emUso;
         this.fkMaquina = fkMaquina;
     }
 
-    public Double getTamanho() {
-        return tamanho;
+    public Long getDisponivel() {
+        return disponivel;
     }
 
-    public Double getLeituras() {
-        return leituras;
+    public Long getTotal() {
+        return total;
     }
 
-    public Double getBytesLeitura() {
-        return bytesLeitura;
+    public Long getEmUso() {
+        return emUso;
     }
 
-    public Double getEscritas() {
-        return escritas;
-    }
-
-    public Double getBytesEscrita() {
-        return bytesEscrita;
-    }
-
-    public Long getTempoTranferencia() {
-        return tempoTranferencia;
-    }
-
-    public Integer getFkMaquina() {
+    public String getFkMaquina() {
         return fkMaquina;
     }
 
-    public void setFkMaquina(Integer fkMaquina) {
+    public void setFkMaquina(String fkMaquina) {
         this.fkMaquina = fkMaquina;
     }
 }

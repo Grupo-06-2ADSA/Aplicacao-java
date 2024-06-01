@@ -4,10 +4,10 @@ public class Processador {
     private final String nome;
     private final Double emUso;
     private final Double temp;
-    private final Integer fkMaquina;
+    private String fkMaquina;
 
 
-    public Processador(String nome, Double emUso, Double temp, Integer fkMaquina) {
+    public Processador(String nome, Double emUso, Double temp, String fkMaquina) {
         this.nome = nome;
         this.emUso = emUso;
         this.temp = temp;
@@ -26,7 +26,7 @@ public class Processador {
         return temp;
     }
 
-    public Integer getFkMaquina() {
+    public String getFkMaquina() {
         return fkMaquina;
     }
 }

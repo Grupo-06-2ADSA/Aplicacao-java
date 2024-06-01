@@ -5,9 +5,9 @@ public class Janelas {
     private String titulo;
     private Long pid;
     private Integer total;
-    private Integer fkMaquina;
+    private String fkMaquina;
 
-    public Janelas(Long id, String titulo, Long pid, Integer total, Integer fkMaquina) {
+    public Janelas(Long id, String titulo, Long pid, Integer total, String fkMaquina) {
         this.id = id;
         this.titulo = titulo;
         this.pid = pid;
@@ -31,11 +31,11 @@ public class Janelas {
         return total;
     }
 
-    public Integer getFkMaquina() {
+    public String getFkMaquina() {
         return fkMaquina;
     }
 
-    public void setFkMaquina(Integer fkMaquina) {
+    public void setFkMaquina(String fkMaquina) {
         this.fkMaquina = fkMaquina;
     }
 }
