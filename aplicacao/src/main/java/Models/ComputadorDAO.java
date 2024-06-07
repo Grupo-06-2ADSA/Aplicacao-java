@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 
 public class ComputadorDAO {
     public static void cadastrarComputador(Computador computador) {
-        String sql = "INSERT INTO Maquina (hostname, ip) VALUES (?, ?)";
+        String sql = "INSERT INTO Maquina (hostname, ip, fkEmpresa) VALUES (?, ?, ?)";
 
         PreparedStatement ps2 = null;
         PreparedStatement psSql = null;
@@ -18,11 +18,13 @@ public class ComputadorDAO {
             ps2 = Conexao.getConexao().prepareStatement(sql);
             ps2.setString(1, computador.getHostName());
             ps2.setString(2, computador.getIpv4());
+            ps2.setString(3, computador.getFkEmpresa());
             ps2.execute();
 
             psSql = Conexao.getSQLConexao().prepareStatement(sql);
             psSql.setString(1, computador.getHostName());
             psSql.setString(2, computador.getIpv4());
+            psSql.setString(3, computador.getFkEmpresa());
             psSql.execute();
 
             System.out.println("O computador foi cadastrado com sucesso!");

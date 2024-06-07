@@ -1,7 +1,5 @@
 Entidades\Janelas.class
-Models\UsuarioDAO.class
 Models\MemoriaRamDAO.class
-Entidades\Usuario.class
 Models\DiscoDAO.class
 Main\App.class
 Models\ComputadorDAO.class

@@ -3,50 +3,45 @@ package Main;
 import Entidades.*;
 import Models.*;
 import com.github.britooo.looca.api.core.Looca;
-import com.github.britooo.looca.api.group.discos.Disco;
 import com.github.britooo.looca.api.group.discos.DiscoGrupo;
 import com.github.britooo.looca.api.group.discos.Volume;
 import com.github.britooo.looca.api.group.janelas.Janela;
 import com.github.britooo.looca.api.group.janelas.JanelaGrupo;
 import com.github.britooo.looca.api.group.memoria.Memoria;
 import com.github.britooo.looca.api.group.processador.Processador;
-import com.github.britooo.looca.api.group.rede.Rede;
 import com.github.britooo.looca.api.group.sistema.Sistema;
 import com.github.britooo.looca.api.group.temperatura.Temperatura;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class App {
-    public static void main(String[] args) throws IOException, InterruptedException {
-        System.out.println("""       
-                         
-                ███╗   ███╗██╗███╗   ██╗██████╗      ██████╗ ██████╗ ██████╗ ███████╗
-                ████╗ ████║██║████╗  ██║██╔══██╗    ██╔════╝██╔═══██╗██╔══██╗██╔════╝
-                ██╔████╔██║██║██╔██╗ ██║██║  ██║    ██║     ██║   ██║██████╔╝█████╗ \s
-                ██║╚██╔╝██║██║██║╚██╗██║██║  ██║    ██║     ██║   ██║██╔══██╗██╔══╝ \s
-                ██║ ╚═╝ ██║██║██║ ╚████║██████╔╝    ╚██████╗╚██████╔╝██║  ██║███████╗
-                ╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═════╝      ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝
-                                                                                    \s               
-                """);
+    public static void main(String[] args) {
+        String fkEmpresa = System.getenv("FK_EMPRESA");
 
-        Usuario.FazerLogin();
+        if (fkEmpresa == null) {
+            System.err.println("Chave estrangeira não encontrada.");
+            System.exit(1);
+        } else {
+            capturarDados(fkEmpresa);
+        }
+
     }
 
-    public static void CapturarDados() {
+    public static void capturarDados(String fkEmpresa) {
         Looca looca = new Looca();
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
         // Máquina
         String hostName = looca.getRede().getParametros().getHostName();
         String ipv4 = String.valueOf((looca.getRede()).getGrupoDeInterfaces().getInterfaces().get(0).getEnderecoIpv4());
-        Computador computador = new Computador(hostName, ipv4);
+        Computador computador = new Computador(hostName, ipv4, fkEmpresa);
 
         boolean maquinaExiste = ComputadorDAO.verificarComputador(computador);
 
@@ -131,7 +126,7 @@ public class App {
                 emUso = total - disponivel;
             }
 
-            Entidades.Disco disco00 = new Entidades.Disco(disponivel, total, emUso, hostName);
+            Disco disco00 = new Disco(disponivel, total, emUso, hostName);
 
             try {
                 DiscoDAO.cadastrarDisco(disco00);
@@ -193,7 +188,7 @@ public class App {
                     titulo = janela.getTitulo();
                     pidJanela = janela.getPid();
 
-                    Entidades.Janelas janela00 = new Janelas(idJanela, titulo, pidJanela, totalJanelas, hostName);
+                    Janelas janela00 = new Janelas(idJanela, titulo, pidJanela, totalJanelas, hostName);
 
                     try {
                         if (titulo != null && !titulo.isEmpty()) {
