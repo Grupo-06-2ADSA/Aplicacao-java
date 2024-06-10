@@ -22,16 +22,18 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class App {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, InterruptedException {
         String fkEmpresa = System.getenv("FK_EMPRESA");
+        String email = System.getenv("EMAIL_USUARIO");
 
-        if (fkEmpresa == null) {
-            System.err.println("Chave estrangeira não encontrada.");
+        if (fkEmpresa == null || email == null) {
+            System.err.println("Variável de ambiente não encontrada.");
             System.exit(1);
         } else {
             capturarDados(fkEmpresa);
+            Usuario usuario = new Usuario(email, fkEmpresa);
+            usuario.enviarMensagemSlack();
         }
-
     }
 
     public static void capturarDados(String fkEmpresa) {
@@ -112,18 +114,20 @@ public class App {
             }
 
             // Disco
-            Long disponivel = 0l;
-            Long total = 0l;
-            Long emUso = 0l;
+            Double disponivel = 0.0;
+            Double total = 0.0;
+            Double emUso = 0.0;
+            Double porcentagemUso = 0.0;
 
             System.out.println("------ Disco ------");
 
             List<Volume> grupoDiscos = disco.getVolumes();
 
             for (Volume grupoDisco : grupoDiscos) {
-                disponivel = grupoDisco.getDisponivel();
-                total = grupoDisco.getTotal();
+                disponivel = (grupoDisco.getDisponivel() / 1e+9) / 1024;
+                total = (grupoDisco.getTotal() / 1e+9) / 1024;
                 emUso = total - disponivel;
+                porcentagemUso = (emUso / total) * 100;
             }
 
             Disco disco00 = new Disco(disponivel, total, emUso, hostName);
@@ -134,15 +138,18 @@ public class App {
                 System.out.println("Erro ao realizar o cadastro: " + e.getMessage());
             }
 
-//            JSONObject jsonREDE = new JSONObject();
-//            jsonREDE.put("text", "O usuário "+Usuario.getEmail()+ " Realizou login");
-//            try {
-//                Slack.sendMessage(jsonREDE);
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            } catch (InterruptedException e) {
-//                throw new RuntimeException(e);
-//            }
+            Double finalPorcentagemUso = porcentagemUso;
+
+            if (finalPorcentagemUso >= 80.0) {
+                JSONObject jsonCPU = new JSONObject();
+                jsonCPU.put("text", "Disco da Máquina: " + computador.getHostName() + " com uso MAIOR QUE 80%!!!");
+                try {
+                    Slack.sendMessage(jsonCPU);
+                } catch (IOException | InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
 
             // CPU
             String nomeCpu = processador.getNome();
@@ -151,7 +158,7 @@ public class App {
             System.out.println("------ CPU ------");
             String nomeSO = looca.getSistema().getSistemaOperacional();
 
-            if (nomeSO.contains("Windows")){
+            if (nomeSO.contains("Windows")) {
                 if (tempCPU > 70.0) {
                     JSONObject jsonCPU = new JSONObject();
                     jsonCPU.put("text", "Temperatura da Máquina: " + computador.getHostName() + " MAIOR QUE 70º!!!");

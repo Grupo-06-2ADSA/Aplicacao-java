@@ -125,3 +125,11 @@ insert into Funcionario (nome, email, senha, telefone, tipo, turno,  estado, fkE
 	values ('Luan Gomes', 'luan@gmail.com', '654321', '11958741526', 'Gestor', 'noite', 'ativo', '12547896547852');
 insert into Funcionario (nome, email, senha, telefone, tipo, turno,  estado, fkEmpresa)
     values ('Heloisa Salgado', 'heloisa@gmail.com', '123456', '11982410672', 'Gestor', 'tarde', 'ativo', '12547896547852');
+
+insert into Sala (nome, andar) values
+('ADS A', 3),
+('ADS B', 4),
+('ADS C', 2),
+('SIS', 6),
+('CCO', 5),
+('Reservas', 1);
